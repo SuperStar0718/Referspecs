@@ -9,4 +9,10 @@ const GlobalStyle = createGlobalStyle`
     }
 `;
 
+declare global {
+  interface Window {
+    adsbygoogle: { [key: string]: unknown }[];
+  }
+}
+
 export default GlobalStyle;

@@ -1,4 +1,3 @@
-
 import { randomUUID } from "crypto";
 import Document, { Head, Html, Main, NextScript } from "next/document";
 import React from "react";
@@ -35,8 +34,8 @@ export default class MyDocument extends Document {
     return (
       <Html lang="pt-BR">
         <Head>
-   
           <meta name="theme-color" />
+          <meta name="google" content="notranslate"></meta>
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link
             rel="preconnect"
@@ -51,6 +50,12 @@ export default class MyDocument extends Document {
             href="https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap"
             rel="stylesheet"
           ></link>
+          {/* Add the AdSense script here */}
+          <script
+            data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+          ></script>
         </Head>
         <body>
           <Main />

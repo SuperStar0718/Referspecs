@@ -23,7 +23,7 @@ export default function EasterEggsBanner({ search }: { search: string }) {
       onClick={() => handleEasterEgg(easterEggI)}
       icon={
         easterEggI === search ? (
-          <CheckCircleIcon sx={{ color: "#CF39E8" }} />
+          <CheckCircleIcon sx={{ color: "#0000ff" }} />
         ) : (
           <AdjustIcon />
         )

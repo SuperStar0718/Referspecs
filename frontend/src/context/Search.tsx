@@ -43,13 +43,13 @@ export function SearchProvider({ children }: any) {
 
   const onSearch = (searchWord?: Search) => {
     if (!searchWord?.query && !search.query) {
-      setSearch({query: "Escreve, imbecil!"});
+      setSearch({ query: "Ask anything you want!" });
       return;
     }
     if (!searchWord) searchWord = search;
 
     addSearch(searchWord);
-     (searchWord);
+    searchWord;
     router.push({
       pathname: "/results",
       query: { search: searchWord.query },

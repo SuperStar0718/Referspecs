@@ -28,7 +28,7 @@ const TopBarRoot = styled.div<{
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 20px 50px;
+  padding: 10px 50px;
   background-color: ${({ bg }) => bg};
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
 `;

@@ -55,7 +55,7 @@ export default function SearchBar({
       animate={
         mic
           ? {
-              boxShadow: ["0 0 60px 0 #DA3D3D", "0 0 70px 0px #CF39E8"],
+              boxShadow: ["0 0 60px 0 #DA3D3D", "0 0 70px 0px #0000ff"],
               transition: {
                 duration: 0.5,
                 repeat: Infinity,
@@ -81,7 +81,7 @@ export default function SearchBar({
           x="0"
           y="0"
           rx="20"
-          stroke="#CF39E8"
+          stroke="#0000ff"
           fill="transparent"
           strokeWidth={2}
           variants={draw}
@@ -91,7 +91,7 @@ export default function SearchBar({
         />
       </motion.svg>
       <SearchIcon
-        style={{ position: "relative", left: "10px", color: "#CF39E8" }}
+        style={{ position: "relative", left: "10px", color: "#0000ff" }}
       />
       <SearchInput
         value={search.query}

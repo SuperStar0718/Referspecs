@@ -8,6 +8,7 @@ import ModelTrainingIcon from "@mui/icons-material/ModelTraining";
 import Result from "./Result";
 import { Result as IResult } from "@/libs/interfaces";
 import Banner, { Message } from "./Banner";
+import router from "next/router";
 
 interface ChatGPTPros {
   search: string;
@@ -18,7 +19,15 @@ interface ChatGPTPros {
 export default function ChatGPT({ search, style, info }: ChatGPTPros) {
   const { theme } = useTheme();
   const [completion, setCompletion] = useState("");
+  const [followup, setFollowup] = useState(Array<string>());
   const [results, setResults] = useState<IResult[]>([]);
+
+  const askQuestion = (question: string) => {
+    router.push({
+      pathname: "/results",
+      query: { search: question },
+    });
+  };
 
   const adapterChatGptResultToResult = (
     resultsChatGpt: Array<{
@@ -44,42 +53,61 @@ export default function ChatGPT({ search, style, info }: ChatGPTPros) {
   useEffect(() => {
     const fetchCompletion = async () => {
       try {
-        const response = await openai.createCompletion({
-          model: "text-davinci-003",
-          prompt: `Tell me what you know about: ${search}`,
-          temperature: 0.9,
-          max_tokens: 200,
-          top_p: 1,
-          frequency_penalty: 0,
-          presence_penalty: 0.6,
+        const chatCompletion = await openai.chat.completions.create({
+          messages: [
+            { role: "user", content: `Tell me what you know about: ${search}` },
+          ],
+          model: "gpt-3.5-turbo",
         });
-         (completion);
-        setCompletion(response.data.choices[0].text);
+
+        completion;
+        generateFollowUpQuestions();
+        setCompletion(chatCompletion.choices[0].message.content);
       } catch (error) {
         setCompletion("Não foi possível completar a pesquisa.");
-         (error);
+        error;
       }
     };
 
-    const fetchResults = async () => {
-      const response = await openai.createCompletion({
-        model: "text-davinci-003",
-        prompt: `Bring two useful links about ${search} in an array in json format, each array object must contain the following properties: title, abs (abstract), keywords (string array) and url. Use a maximum of 300 tokens.`,
-        temperature: 0.9,
-        max_tokens: 500,
-        top_p: 1,
-        frequency_penalty: 0,
-        presence_penalty: 0.6,
+    const generateFollowUpQuestions = async () => {
+      const chatCompletion = await openai.chat.completions.create({
+        messages: [
+          {
+            role: "user",
+            content: `Generate 2 or 3 follow up questions within very simple and short sentence about ${search}.`,
+          },
+        ],
+        model: "gpt-3.5-turbo",
       });
-       (JSON.parse(response.data.choices[0].text));
+      console.log("follow up questions:", chatCompletion.choices[0].message);
+      //append this follow up questions to completion state variable using setcompletion
+      setFollowup(
+        chatCompletion.choices[0].message.content
+          .split("\n")
+          .map((question: string) => question.replace(/^\d+\.\s*/, "").trim())
+      );
+    };
+
+    const fetchResults = async () => {
+      const chatCompletion = await openai.chat.completions.create({
+        messages: [
+          {
+            role: "user",
+            content: `Bring two useful links about ${search} in an array in json format, each array object must contain the following properties: title, abs (abstract), keywords (string array) and url. Use a maximum of 300 tokens.`,
+          },
+        ],
+        model: "gpt-3.5-turbo",
+      });
+      // JSON.parse(chatCompletion.choices[0].message.content);
       try {
+        console.log("result:", chatCompletion.choices[0].message.content);
         setResults(
           adapterChatGptResultToResult(
-            JSON.parse(response.data.choices[0].text) as any
+            chatCompletion.choices[0].message.content
           )
         );
       } catch (error) {
-         (error);
+        error;
       }
     };
 
@@ -88,7 +116,7 @@ export default function ChatGPT({ search, style, info }: ChatGPTPros) {
         fetchCompletion();
         fetchResults();
       } catch (error) {
-         (error);
+        error;
       }
     }
   }, [search]);
@@ -101,7 +129,7 @@ export default function ChatGPT({ search, style, info }: ChatGPTPros) {
     >
       {info && <Banner message={info} />}
       <MetaInfoChatGPT>
-        <Tooltip title="Modelo">
+        {/* <Tooltip title="Modelo">
           <Chip
             avatar={
               <Avatar sx={{ backgroundColor: theme.colors.section.secondary }}>
@@ -132,22 +160,30 @@ export default function ChatGPT({ search, style, info }: ChatGPTPros) {
               color: theme.colors.section.primary,
             }}
           />
-        </Tooltip>
+        </Tooltip> */}
       </MetaInfoChatGPT>
       <TextBox
         style={{
-          border: `1px solid ${theme.colors.section.secondary}`,
+          // border: `1px solid ${theme.colors.section.secondary}`,
           backgroundColor: theme.colors.bg_secondary,
         }}
       >
-        <Typography
-          variant="body1"
-          sx={{
-            color: theme.colors.text_secondary,
-          }}
-        >
-          {completion}
-        </Typography>
+        <ChatGPTResult>
+          <Pre>{completion}</Pre>
+          {followup && followup.length > 0 && (
+            <div style={{ marginTop: "10px", fontSize: "medium" }}>
+              Follow up Questions:
+            </div>
+          )}
+          <FollowUpQuestions>
+            {followup &&
+              followup.map((question, index) => (
+                <Question key={index} onClick={() => askQuestion(question)}>
+                  {index + 1}. {question}
+                </Question>
+              ))}
+          </FollowUpQuestions>
+        </ChatGPTResult>
       </TextBox>
 
       <List
@@ -158,11 +194,11 @@ export default function ChatGPT({ search, style, info }: ChatGPTPros) {
         {results.map((result) => (
           <Result key={result.url} result={result} />
         ))}
-        {results.length === 0 && (
+        {/* {results.length === 0 && (
           <NoResultContainer variant="body1" color={theme?.colors.text}>
             Nenhum resultado encontrado {":("}
           </NoResultContainer>
-        )}
+        )} */}
       </List>
     </ChatGPTBox>
   );
@@ -196,4 +232,35 @@ const NoResultContainer = styled(Typography)`
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+const ChatGPTResult = styled.div`
+  width: 100%;
+  font-size: large;
+  line-height: 1.75;
+`;
+
+const Pre = styled.pre`
+  text-wrap: wrap;
+`;
+
+const FollowUpQuestions = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 10px;
+  font-size: medium;
+`;
+
+const Question = styled.div`
+  font-weight: 600;
+  line-height: 24px;
+  background-color: #e8ebfa;
+  font-style: italic;
+  cursor: pointer;
+  width: fit-content;
+  padding: 5px 10px;
+  border-radius: 12px;
 `;

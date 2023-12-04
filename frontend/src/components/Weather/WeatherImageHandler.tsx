@@ -35,5 +35,5 @@ export default function WeatherLottieHandler({
         style={{ height: "50px", width: "50px" }}
       ></Player>
     );
-  else return <img src={optionalImg} alt="Imagem do tempo" />;
+  else return <img src={optionalImg} alt="Weather image" />;
 }

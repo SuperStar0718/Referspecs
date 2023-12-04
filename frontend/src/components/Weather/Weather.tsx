@@ -17,7 +17,6 @@ const fetchWeather = async (lat: number, lon: number) => {
 };
 
 export default function Weather() {
-
   const [coords, setCoords] = useState({ lat: 0, lon: 0 });
   const { theme } = useTheme();
 
