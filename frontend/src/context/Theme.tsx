@@ -26,7 +26,7 @@ interface ThemeMain {
 
 const sectionThemes = {
   docfynd: {
-    primary: "#CF39E8",
+    primary: "#0000ff",
     secondary: "#DA3D3D",
   },
   searchonmath: {
@@ -46,7 +46,7 @@ const themes = {
       bg_secondary: "#f5f5f5",
       text: "#000",
       text_secondary: "#242424",
-      primary: "#CF39E8",
+      primary: "#0000ff",
       secondary: "#DA3D3D",
       section: sectionThemes.docfynd,
     },
@@ -58,7 +58,7 @@ const themes = {
       bg_secondary: "#242424",
       text: "#fff",
       text_secondary: "#cacaca",
-      primary: "#CF39E8",
+      primary: "#0000ff",
       secondary: "#DA3D3D",
       section: sectionThemes.docfynd,
     },
@@ -77,7 +77,7 @@ const Theme = createContext({} as ThemeValue);
 export default Theme;
 
 export function ThemeProvider({ children }: any) {
-  const [mainTheme, setMainTheme] = useState(themes.dark);
+  const [mainTheme, setMainTheme] = useState(themes.light);
   const toogleTheme = () => {
     setMainTheme((old) => {
       let newTheme = old.theme_name === "light" ? themes.dark : themes.light;

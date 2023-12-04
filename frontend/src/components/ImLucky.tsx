@@ -16,6 +16,16 @@ interface LuckyProps {
 export default function LuckyBox({ show, desactive }: LuckyProps) {
   const { theme } = useTheme();
   const { onSearch } = useSearch();
+  const categoryWords = [
+    "Aerospace & Defense",
+    "Food & Pharmaceutical",
+    "Medical Device",
+    "Automotive",
+    "Environment, Health, and Safety",
+    "Accounting and Taxes",
+    "Life Science",
+    "Building and Construction",
+  ];
   const draw = {
     hidden: (i: number) => ({
       x: -200,
@@ -29,7 +39,6 @@ export default function LuckyBox({ show, desactive }: LuckyProps) {
       },
     }),
     visible: (i: number) => {
-
       return {
         x: 0,
         opacity: 1,
@@ -55,7 +64,7 @@ export default function LuckyBox({ show, desactive }: LuckyProps) {
               <IconButton onClick={desactive}>
                 <CloseIcon
                   sx={{
-                    color: "#CF39E8",
+                    color: "#0000ff",
                   }}
                 />
               </IconButton>
@@ -65,33 +74,30 @@ export default function LuckyBox({ show, desactive }: LuckyProps) {
                 padding: "10px",
               }}
             >
-              {randomWords({ wordsPerString: 2, min: 2, max: 4 })
-                .concat(randomWords({ min: 5, max: 6 }))
-                .sort(() => Math.random() - 0.5)
-                .map((word, index) => (
-                  <ListItemAnimated
-                    key={word + index}
-                    sx={{
-                      backgroundColor: "#CF39E8",
-                      color: "#fff",
-                      borderRadius: "3px",
-                      marginBottom: "5px",
-                      width: "fit-content",
-                    }}
-                    custom={index}
-                    variants={draw}
-                    initial="hidden"
-                    animate="visible"
-                    exit={"hidden"}
-                    secondaryAction={
-                      <IconButton onClick={() => onSearch({query: word})}>
-                        <OpenInNewIcon />
-                      </IconButton>
-                    }
-                  >
-                    <ListItemText primary={word} sx={{ marginRight: "10px" }} />
-                  </ListItemAnimated>
-                ))}
+              {categoryWords.map((word, index) => (
+                <ListItemAnimated
+                  key={word + index}
+                  sx={{
+                    backgroundColor: "#0000ff",
+                    color: "#fff",
+                    borderRadius: "3px",
+                    marginBottom: "5px",
+                    width: "fit-content",
+                  }}
+                  custom={index}
+                  variants={draw}
+                  initial="hidden"
+                  animate="visible"
+                  exit={"hidden"}
+                  secondaryAction={
+                    <IconButton onClick={() => onSearch({ query: word })}>
+                      <OpenInNewIcon />
+                    </IconButton>
+                  }
+                >
+                  <ListItemText primary={word} sx={{ marginRight: "10px" }} />
+                </ListItemAnimated>
+              ))}
             </ListAnimated>
           </LuckyBoxRoot>
         )}

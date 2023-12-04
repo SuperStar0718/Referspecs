@@ -61,12 +61,11 @@ export default function HistoryList({ show, filter }: HistoryProps) {
               .reverse()
               .map((history_item, index) => (
                 <ListItem
-
                   secondaryAction={
-                    (index + 1) === mouseOverItem && (
+                    index + 1 === mouseOverItem && (
                       <OpenInNewIcon
                         sx={{
-                          color: "#CF39E8",
+                          color: "#0000ff",
                           width: 20,
                         }}
                       />
@@ -95,7 +94,7 @@ export default function HistoryList({ show, filter }: HistoryProps) {
                     <Avatar sx={{ background: "transparent" }}>
                       <HistoryIcon
                         sx={{
-                          color: "#CF39E8",
+                          color: "#0000ff",
                           width: 20,
                         }}
                       />

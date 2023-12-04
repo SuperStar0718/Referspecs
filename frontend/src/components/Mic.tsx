@@ -1,19 +1,21 @@
-import React, { useEffect } from 'react';
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import MicIcon from '@mui/icons-material/Mic';
-import { motion } from 'framer-motion';
+import React, { useEffect } from "react";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
+import MicIcon from "@mui/icons-material/Mic";
+import { motion } from "framer-motion";
 
 interface DictaphoneProps {
-    setTranscript: (transcript: string) => void;
-    setListening: (listening: boolean) => void;
+  setTranscript: (transcript: string) => void;
+  setListening: (listening: boolean) => void;
 }
 
-const Dictaphone = ({setTranscript, setListening}: DictaphoneProps) => {
+const Dictaphone = ({ setTranscript, setListening }: DictaphoneProps) => {
   const {
     transcript,
     listening,
     resetTranscript,
-    browserSupportsSpeechRecognition
+    browserSupportsSpeechRecognition,
   } = useSpeechRecognition();
 
   useEffect(() => {
@@ -25,7 +27,13 @@ const Dictaphone = ({setTranscript, setListening}: DictaphoneProps) => {
   }, [listening]);
 
   return (
-    <motion.div onClick={() => !listening ? SpeechRecognition.startListening({ language: "pt-BR" }) : SpeechRecognition.stopListening()} style={{
+    <motion.div
+      onClick={() =>
+        !listening
+          ? SpeechRecognition.startListening({ language: "pt-BR" })
+          : SpeechRecognition.stopListening()
+      }
+      style={{
         position: "relative",
         right: "10px",
         height: "100%",
@@ -33,9 +41,11 @@ const Dictaphone = ({setTranscript, setListening}: DictaphoneProps) => {
         alignItems: "center",
         justifyContent: "center",
         cursor: "pointer",
-
-    }}>
-       <MicIcon  style={{ position: "relative", right: "10px", color: "#CF39E8" }} />
+      }}
+    >
+      <MicIcon
+        style={{ position: "relative", right: "10px", color: "#0000ff" }}
+      />
     </motion.div>
   );
 };

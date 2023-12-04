@@ -81,7 +81,7 @@ export default function ResutlsPage() {
           buttons={[
             {
               content: {
-                label: "Wikipedia",
+                label: "REFERSPECS",
               },
               onClick: (num) => {
                 setSearchSection(num);
@@ -90,22 +90,22 @@ export default function ResutlsPage() {
             },
             {
               content: {
-                label: "SearchOnMath",
+                label: "WEB SEARCH",
               },
               onClick: (num) => {
                 setSearchSection(num);
                 toogleSectionTheme("searchonmath");
               },
             },
-            {
-              content: {
-                label: "ChatGPT",
-              },
-              onClick: (num) => {
-                setSearchSection(num);
-                toogleSectionTheme("chatgpt");
-              },
-            },
+            // {
+            //   content: {
+            //     label: "ChatGPT",
+            //   },
+            //   onClick: (num) => {
+            //     setSearchSection(num);
+            //     toogleSectionTheme("chatgpt");
+            //   },
+            // },
           ]}
           sx={{
             fgColor: theme?.colors.section.primary,
@@ -162,7 +162,7 @@ export default function ResutlsPage() {
             filterFields={filter}
           />
         </ResultsBox>
-        {!isMobileView && <EasterEggsBanner search={search as string} />}
+        {/* {!isMobileView && <EasterEggsBanner search={search as string} />} */}
       </EasterEgg>
     </ResultPageRoot>
   );

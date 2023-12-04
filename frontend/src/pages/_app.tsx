@@ -13,7 +13,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <title>Docfynd</title>
+        <title>Referspecs</title>
       </Head>
       <GlobalStyle />
       <QueryClientProvider client={queryClient}>
