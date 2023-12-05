@@ -36,6 +36,10 @@ export default class MyDocument extends Document {
         <Head>
           <meta name="theme-color" />
           <meta name="google" content="notranslate"></meta>
+          <meta
+            name="google-adsense-account"
+            content="ca-pub-3673596817346725"
+          ></meta>
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link
             rel="preconnect"
@@ -52,9 +56,9 @@ export default class MyDocument extends Document {
           ></link>
           {/* Add the AdSense script here */}
           <script
-            data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
             async
-            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3673596817346725"
+            crossOrigin="anonymous"
           ></script>
         </Head>
         <body>

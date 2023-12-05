@@ -13,6 +13,7 @@ interface SectionTheme {
 
 interface ThemeMain {
   colors: {
+    bg_third: string;
     bg: string;
     bg_secondary: string;
     text: string;
@@ -44,6 +45,7 @@ const themes = {
     colors: {
       bg: "#fff",
       bg_secondary: "#f5f5f5",
+      bg_third: "#d9d9d9",
       text: "#000",
       text_secondary: "#242424",
       primary: "#0000ff",
@@ -56,6 +58,7 @@ const themes = {
     colors: {
       bg: "#202020",
       bg_secondary: "#242424",
+      bg_third: "#313131",
       text: "#fff",
       text_secondary: "#cacaca",
       primary: "#0000ff",
