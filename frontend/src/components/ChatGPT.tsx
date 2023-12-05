@@ -9,6 +9,9 @@ import Result from "./Result";
 import { Result as IResult } from "@/libs/interfaces";
 import Banner, { Message } from "./Banner";
 import router from "next/router";
+import Loader from "./Loader";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 interface ChatGPTPros {
   search: string;
@@ -168,29 +171,42 @@ export default function ChatGPT({ search, style, info }: ChatGPTPros) {
           backgroundColor: theme.colors.bg_secondary,
         }}
       >
-        <ChatGPTResult style={{ color: theme?.colors.text_secondary }}>
-          <Pre>{completion}</Pre>
-          {followup && followup.length > 0 && (
-            <div style={{ marginTop: "10px", fontSize: "medium" }}>
-              Follow up Questions:
-            </div>
-          )}
-          <FollowUpQuestions>
-            {followup &&
-              followup.map((question, index) => (
-                <Question
-                  key={index}
-                  onClick={() => askQuestion(question)}
-                  style={{
-                    color: theme?.colors.text_secondary,
-                    backgroundColor: theme?.colors.bg_third,
-                  }}
-                >
-                  {index + 1}. {question}
-                </Question>
-              ))}
-          </FollowUpQuestions>
-        </ChatGPTResult>
+
+        {completion ? (
+          <ChatGPTResult style={{ color: theme?.colors.text_secondary }}>
+            <Pre>{completion}</Pre>
+            {followup && followup.length > 0 && (
+              <div style={{ marginTop: "10px", fontSize: "medium" }}>
+                Follow up Questions:
+              </div>
+            )}
+            <FollowUpQuestions>
+              {followup &&
+                followup.map((question, index) => (
+                  <Question
+                    key={index}
+                    onClick={() => askQuestion(question)}
+                    style={{
+                      color: theme?.colors.text_secondary,
+                      backgroundColor: theme?.colors.bg_third,
+                    }}
+                  >
+                    {index + 1}. {question}
+                  </Question>
+                ))}
+            </FollowUpQuestions>
+          </ChatGPTResult>
+        ) : (
+          <SkeletonTheme baseColor="#f5f5f5" highlightColor="#A3C9FF">
+          <p>
+            <Skeleton count={3} />
+            <Skeleton count={1} style={{ width: "90%" }} />
+            <br />
+            <Skeleton count={2} />
+            <Skeleton count={1} style={{ width: "80%" }} />
+          </p>
+        </SkeletonTheme>
+        )}
       </TextBox>
 
       <List
