@@ -3,7 +3,7 @@ import LuckyBox from "@/components/ImLucky";
 import SearchBox from "@/components/SearchBox";
 import TopBar from "@/components/TopBar";
 import Weather from "@/components/Weather/Weather";
-// import AdUnit from "@/components/AdUnit";
+import AdUnit from "@/components/AdUnit";
 import { useSearch } from "@/context/Search";
 import { useTheme } from "@/context/Theme";
 import useDeviceDetect from "@/hook/useDetectDevice";
@@ -110,7 +110,7 @@ export default function SearchPage({ countDocs }: SearchPageProps) {
           </Button>
         </ButtonBox>
       </SearchBody>
-      {/* <AdUnit /> */}
+      <AdUnit />
       <Footer
         style={{
           padding: isMobileView ? "0 1.25rem" : "1.25rem 3.125rem",

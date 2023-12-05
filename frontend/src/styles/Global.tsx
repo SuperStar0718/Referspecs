@@ -7,9 +7,19 @@ const GlobalStyle = createGlobalStyle`
         box-sizing: border-box;
         -webkit-tap-highlight-color: transparent;
     }
-    html{
-      font-family:Segoe UI,-apple-system,BlinkMacSystemFont,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif
-    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  pre{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  @font-face {
+    font-family: 'Segoe UI';
+    src: url('/fonts/SegoeUI.woff2') format('woff2'),
+         url('/fonts/SegoeUI.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
 `;
 
 declare global {
