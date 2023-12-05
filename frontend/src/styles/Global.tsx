@@ -7,6 +7,9 @@ const GlobalStyle = createGlobalStyle`
         box-sizing: border-box;
         -webkit-tap-highlight-color: transparent;
     }
+    html{
+      font-family:Segoe UI,-apple-system,BlinkMacSystemFont,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif
+    }
 `;
 
 declare global {

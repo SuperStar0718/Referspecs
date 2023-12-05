@@ -46,27 +46,25 @@ export default function SearchPage({ countDocs }: SearchPageProps) {
       <TopBar />
       <SearchBody>
         <ChatGPT>
-          <svg
-            font-size="3.75rem"
-            aria-hidden="true"
-            aria-label="Chat logo"
-            fill="rgba(115, 118, 225, 1)"
-            className="___12fm75w f1w7gpdv fez10in fg4l7m0"
-            role="img"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M4.85 8.15a2.84 2.84 0 0 1 .69 1.11l.45 1.38a.54.54 0 0 0 1.02 0l.45-1.38a2.84 2.84 0 0 1 1.8-1.8l1.38-.44a.54.54 0 0 0 0-1.03h-.03l-1.38-.45a2.84 2.84 0 0 1-1.8-1.8L7 2.36a.54.54 0 0 0-1.03 0L5.5 3.74l-.01.03a2.84 2.84 0 0 1-1.76 1.77l-1.38.44a.54.54 0 0 0 0 1.03l1.38.45c.42.14.8.37 1.11.69ZM20 7a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-2.59l-5.8 5.8a1 1 0 0 1-1.4 0L10 14.4l-5.3 5.3a1 1 0 0 1-1.4-1.42l6-6a1 1 0 0 1 1.4 0l1.8 1.8L17.59 9H15a1 1 0 1 1 0-2h5Zm.02 10.96.76.25h.02a.3.3 0 0 1 .14.47.3.3 0 0 1-.14.1l-.77.26a1.58 1.58 0 0 0-1 1l-.24.76a.3.3 0 0 1-.58 0l-.24-.77a1.57 1.57 0 0 0-1-1l-.77-.25a.3.3 0 0 1-.14-.46.3.3 0 0 1 .14-.1l.77-.26a1.58 1.58 0 0 0 .98-1l.25-.76a.3.3 0 0 1 .57 0l.25.77a1.58 1.58 0 0 0 1 1Z"
-              fill="rgba(115, 118, 225, 1)"
-            ></path>
-          </svg>
-          <Title className="text-black text-6xl font-semibold mb-8">
-            Chat with your data
-          </Title>
-          <Description>Ask anything or try an example</Description>
+          <img src="referspecs_logo.png" alt="" width="80px" height="80px" />
+          <Text style={{ color: theme?.colors.text_secondary }}>
+            ReferSpecs: Your AI-powerd CoPilot for Standards and Specifications
+          </Text>
+          <div style={{ display: "flex" }}>
+            <div>
+              <H1>Search</H1>
+              <Text style={{ color: theme?.colors.text_secondary }}>
+                Access and download over 60,000 standards and Specifications
+              </Text>
+            </div>
+            <div>
+              <H1>Conversational AI</H1>
+              <Text style={{ color: theme?.colors.text_secondary }}>
+                Ask question like: "What are the basic requirements of
+                MIL-STD-461?"
+              </Text>
+            </div>
+          </div>
           <QuestionPanel>
             <Question
               onClick={askQuestion}
@@ -117,10 +115,7 @@ export default function SearchPage({ countDocs }: SearchPageProps) {
         style={{
           padding: isMobileView ? "0 1.25rem" : "1.25rem 3.125rem",
         }}
-      >
-        <Weather />
-        <DocCount countDocs={countDocs} />
-      </Footer>
+      ></Footer>
     </SearchPageRoot>
   );
 }
@@ -144,10 +139,10 @@ const SearchPageRoot = styled(motion.div)<{ bg?: string }>`
 const SearchBody = styled.div`
   position: relative;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   flex-direction: column;
-  padding: 3.125rem;
+  padding: 1rem;
   width: 100%;
   gap: 1.25rem;
   height: calc(100vh - 6.25rem);
@@ -204,6 +199,17 @@ const QuestionPanel = styled.div`
     grid-template-columns: repeat(3, 1fr);
     gap: 0.75rem; /* equivalent to gap-3 in Tailwind */
   }
+`;
+const Text = styled.div`
+  color: black;
+  font-size: large;
+  padding: 0px 30px 30px 30px;
+`;
+const H1 = styled.div`
+  color: #1a731f;
+  font-size: 2rem;
+  text-align: center;
+  font-weight: bold;
 `;
 const Question = styled.div`
   padding: 1.25rem; /* p-5 */

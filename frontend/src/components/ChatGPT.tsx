@@ -168,7 +168,7 @@ export default function ChatGPT({ search, style, info }: ChatGPTPros) {
           backgroundColor: theme.colors.bg_secondary,
         }}
       >
-        <ChatGPTResult>
+        <ChatGPTResult style={{ color: theme?.colors.text_secondary }}>
           <Pre>{completion}</Pre>
           {followup && followup.length > 0 && (
             <div style={{ marginTop: "10px", fontSize: "medium" }}>
@@ -178,7 +178,14 @@ export default function ChatGPT({ search, style, info }: ChatGPTPros) {
           <FollowUpQuestions>
             {followup &&
               followup.map((question, index) => (
-                <Question key={index} onClick={() => askQuestion(question)}>
+                <Question
+                  key={index}
+                  onClick={() => askQuestion(question)}
+                  style={{
+                    color: theme?.colors.text_secondary,
+                    backgroundColor: theme?.colors.bg_third,
+                  }}
+                >
                   {index + 1}. {question}
                 </Question>
               ))}
@@ -257,7 +264,6 @@ const FollowUpQuestions = styled.div`
 const Question = styled.div`
   font-weight: 600;
   line-height: 24px;
-  background-color: #e8ebfa;
   font-style: italic;
   cursor: pointer;
   width: fit-content;
