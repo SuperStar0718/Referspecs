@@ -9,6 +9,7 @@ import Result from "./Result";
 import { Result as IResult } from "@/libs/interfaces";
 import Banner, { Message } from "./Banner";
 import router from "next/router";
+import SendIcon from '@mui/icons-material/Send';
 
 interface ChatGPTPros {
   search: string;
@@ -124,6 +125,7 @@ export default function ChatGPT({ search, style, info }: ChatGPTPros) {
   return (
     <ChatGPTBox
       style={{
+        height: 'calc(100vh - 171px)',
         ...style,
       }}
     >
@@ -162,10 +164,12 @@ export default function ChatGPT({ search, style, info }: ChatGPTPros) {
           />
         </Tooltip> */}
       </MetaInfoChatGPT>
-      <TextBox
+      <TextBoxQuestion style={{ backgroundColor: theme?.colors.bg_qtextbox, color: theme?.colors.text_secondary }}>
+        <Pre>{search}</Pre>
+      </TextBoxQuestion>
+      <TextBoxAnswer
         style={{
-          // border: `1px solid ${theme.colors.section.secondary}`,
-          backgroundColor: theme.colors.bg_secondary,
+          backgroundColor: theme?.colors.bg_secondary,
         }}
       >
         <ChatGPTResult style={{ color: theme?.colors.text_secondary }}>
@@ -191,7 +195,16 @@ export default function ChatGPT({ search, style, info }: ChatGPTPros) {
               ))}
           </FollowUpQuestions>
         </ChatGPTResult>
-      </TextBox>
+      </TextBoxAnswer>
+
+      <InputTextBox>
+        <textarea name="" id="" placeholder="Ask any question about a spec."></textarea>
+        <SendIconBox>
+          <SendIcon
+            style={{ position: "relative", left: "10px", color: "#0000ff" }}
+          />
+        </SendIconBox>
+      </InputTextBox>
 
       <List
         style={{
@@ -211,13 +224,56 @@ export default function ChatGPT({ search, style, info }: ChatGPTPros) {
   );
 }
 
+const TextBoxQuestion = styled.div`
+  position: relative;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: auto;
+  border-radius: 5px;
+  padding: 10px;
+  width: fit-content;
+`;
+
+const SendIconBox = styled.div`
+  height: 50px;
+  display: flex;
+  flex-direction: column-reverse;
+`;
+
+const InputTextBox = styled.div`
+  display: flex;
+  gap: 5px;
+  padding: 10px 20px;
+  box-shadow: 0 2px 4px #00000024, 0 0 2px #0000001f;
+  border-radius: 5px;
+  position: sticky;
+  bottom: 10px;
+  width: 100%;
+  background-color: #e7e3e3;
+  textarea {
+    resize: none;
+    border: none;
+    outline: none;
+    width: 100%;
+    height: 50px;
+    font-size: 18px;
+  }
+`;
+
 const ChatGPTBox = styled.div`
   position: relative;
   width: 100%;
-  height: 500px;
+  overflow-y: scroll;
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #ddd;
+  }
 `;
 
-const TextBox = styled.div`
+const TextBoxAnswer = styled.div`
   position: relative;
   margin: 10px 0;
   border-radius: 5px;

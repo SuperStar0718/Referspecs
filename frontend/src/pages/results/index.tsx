@@ -153,7 +153,7 @@ export default function ResutlsPage() {
         <ResultsBox
           style={{
             padding: isMobileView ? "0 5px" : "0 10rem",
-            width: isMobileView ? "100%" : "70%",
+            width: isMobileView ? "100%" : "100%",
           }}
         >
           <SectionController
@@ -196,7 +196,7 @@ const SelectAndFilterBox = styled.div`
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 `;
 
-const ResultsBox = styled(motion.div)<{
+const ResultsBox = styled(motion.div) <{
   isMobileView?: boolean;
 }>`
   position: relative;

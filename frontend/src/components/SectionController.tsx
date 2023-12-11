@@ -41,7 +41,6 @@ export default function SectionController({
   return (
     <SectionControllerRoot
       style={{
-        left: -section * 100 + "%",
         transitionDelay: ".4s",
       }}
     >
@@ -51,9 +50,8 @@ export default function SectionController({
         style={{
           position: "relative",
           zIndex: section === 0 ? 0 : -100,
-          opacity: section === 0 ? 1 : 0,
+          display: section === 0 ? "block" : "none",
           transitionDelay: ".4s",
-
           top: 0,
           left: 0,
         }}
@@ -87,28 +85,29 @@ export default function SectionController({
           position: "relative",
           left: 0,
           zIndex: section === 1 ? 0 : -100,
-          opacity: section === 1 ? 1 : 0,
+          display: section === 1 ? "block" : "none",
           transitionDelay: ".4s",
         }}
       />
-      <ChatGPT
+      {/* <ChatGPT
         search={search}
         style={{
           position: "relative",
           zIndex: section === 0 ? 0 : -100,
-          opacity: section === 0 ? 1 : 0,
+          // opacity: section === 0 ? 1 : 0,
+          display: section === 0 ? "block" : "none",
           transitionDelay: ".4s",
 
           top: 0,
           left: 0,
         }}
-      />
+      /> */}
     </SectionControllerRoot>
   );
 }
 
 const SectionControllerRoot = styled("div")`
   position: relative;
-  width: 300%;
+  width: 100%;
   display: flex;
 `;

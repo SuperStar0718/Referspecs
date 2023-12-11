@@ -129,7 +129,7 @@ const FavoriteResultRoot = styled.div`
   justify-content: flex-end;
 `;
 
-const FavoriteResultList = styled(motion.div)<{
+const FavoriteResultList = styled(motion.div) <{
   bgColor?: string;
 }>`
   position: absolute;

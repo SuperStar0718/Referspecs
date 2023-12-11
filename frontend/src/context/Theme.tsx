@@ -16,6 +16,7 @@ interface ThemeMain {
     bg_third: string;
     bg: string;
     bg_secondary: string;
+    bg_qtextbox: string;
     text: string;
     text_secondary: string;
     primary: string;
@@ -45,6 +46,7 @@ const themes = {
     colors: {
       bg: "#fff",
       bg_secondary: "#f5f5f5",
+      bg_qtextbox: "#c5caf9",
       bg_third: "#d9d9d9",
       text: "#000",
       text_secondary: "#242424",
@@ -58,6 +60,7 @@ const themes = {
     colors: {
       bg: "#202020",
       bg_secondary: "#242424",
+      bg_qtextbox: "#3c3e69",
       bg_third: "#313131",
       text: "#fff",
       text_secondary: "#cacaca",
