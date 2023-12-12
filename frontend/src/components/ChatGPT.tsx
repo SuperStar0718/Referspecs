@@ -10,6 +10,7 @@ import { Result as IResult } from "@/libs/interfaces";
 import Banner, { Message } from "./Banner";
 import router from "next/router";
 import SendIcon from '@mui/icons-material/Send';
+import { set } from "lodash";
 
 interface ChatGPTPros {
   search: string;
@@ -17,11 +18,16 @@ interface ChatGPTPros {
   info?: Message;
 }
 
+interface ChatGPTResult {
+  role: string;
+  content: string;
+  followup: string[] | null;
+}
+
 export default function ChatGPT({ search, style, info }: ChatGPTPros) {
   const { theme } = useTheme();
-  const [completion, setCompletion] = useState("");
-  const [followup, setFollowup] = useState(Array<string>());
   const [results, setResults] = useState<IResult[]>([]);
+  const [chatGptResult, setChatGptResult] = useState<ChatGPTResult[]>([{ role: "user", content: search, followup: null }])
 
   const askQuestion = (question: string) => {
     router.push({
@@ -29,6 +35,53 @@ export default function ChatGPT({ search, style, info }: ChatGPTPros) {
       query: { search: question },
     });
   };
+
+  const sendQuestion = async (question: string) => {
+    if (question === "") question = (document.getElementById("question") as HTMLInputElement).value;
+    else question = question;
+    setChatGptResult((old) => {
+      return [
+        ...old,
+        {
+          role: "user",
+          content: question,
+          followup: null,
+        },
+      ];
+    });
+    (document.getElementById("question") as HTMLInputElement).value = "";
+    const chatCompletion = await openai.chat.completions.create({
+      messages: [
+        { role: "user", content: `Tell me what you know about: ${search}` },
+      ],
+      model: "gpt-3.5-turbo",
+    });
+
+    const followupQuestion = await openai.chat.completions.create({
+      messages: [
+        {
+          role: "user",
+          content: `Generate 2 or 3 follow up questions within very simple and short sentence about ${search}.`,
+        },
+      ],
+      model: "gpt-3.5-turbo",
+    });
+
+    setChatGptResult((old) => {
+      return [
+        ...old,
+        {
+          role: "gpt",
+          content: chatCompletion.choices[0].message.content,
+          followup: followupQuestion.choices[0].message.content
+            .split("\n")
+            .map((question: string) =>
+              question.replace(/^\d+\.\s*/, "").trim()
+            ),
+        },
+      ];
+    })
+  }
 
   const adapterChatGptResultToResult = (
     resultsChatGpt: Array<{
@@ -61,32 +114,43 @@ export default function ChatGPT({ search, style, info }: ChatGPTPros) {
           model: "gpt-3.5-turbo",
         });
 
-        completion;
-        generateFollowUpQuestions();
-        setCompletion(chatCompletion.choices[0].message.content);
+        const followupQuestion = await openai.chat.completions.create({
+          messages: [
+            {
+              role: "user",
+              content: `Generate 2 or 3 follow up questions within very simple and short sentence about ${search}.`,
+            },
+          ],
+          model: "gpt-3.5-turbo",
+        });
+
+        setChatGptResult((old) => {
+          return [
+            ...old,
+            {
+              role: "gpt",
+              content: chatCompletion.choices[0].message.content,
+              followup: followupQuestion.choices[0].message.content
+                .split("\n")
+                .map((question: string) =>
+                  question.replace(/^\d+\.\s*/, "").trim()
+                ),
+            },
+          ];
+        })
       } catch (error) {
-        setCompletion("Não foi possível completar a pesquisa.");
+        setChatGptResult((old) => {
+          return [
+            ...old,
+            {
+              role: "gpt",
+              content: "Unable to complete the search.",
+              followup: null,
+            },
+          ];
+        })
         error;
       }
-    };
-
-    const generateFollowUpQuestions = async () => {
-      const chatCompletion = await openai.chat.completions.create({
-        messages: [
-          {
-            role: "user",
-            content: `Generate 2 or 3 follow up questions within very simple and short sentence about ${search}.`,
-          },
-        ],
-        model: "gpt-3.5-turbo",
-      });
-      console.log("follow up questions:", chatCompletion.choices[0].message);
-      //append this follow up questions to completion state variable using setcompletion
-      setFollowup(
-        chatCompletion.choices[0].message.content
-          .split("\n")
-          .map((question: string) => question.replace(/^\d+\.\s*/, "").trim())
-      );
     };
 
     const fetchResults = async () => {
@@ -125,7 +189,10 @@ export default function ChatGPT({ search, style, info }: ChatGPTPros) {
   return (
     <ChatGPTBox
       style={{
-        height: 'calc(100vh - 171px)',
+        height: 'calc(100vh - 190px)',
+        backgroundColor: theme?.colors.bg_secondary,
+        paddingLeft: "20px",
+        paddingRight: "20px",
         ...style,
       }}
     >
@@ -164,44 +231,53 @@ export default function ChatGPT({ search, style, info }: ChatGPTPros) {
           />
         </Tooltip> */}
       </MetaInfoChatGPT>
-      <TextBoxQuestion style={{ backgroundColor: theme?.colors.bg_qtextbox, color: theme?.colors.text_secondary }}>
-        <Pre>{search}</Pre>
-      </TextBoxQuestion>
-      <TextBoxAnswer
-        style={{
-          backgroundColor: theme?.colors.bg_secondary,
-        }}
-      >
-        <ChatGPTResult style={{ color: theme?.colors.text_secondary }}>
-          <Pre>{completion}</Pre>
-          {followup && followup.length > 0 && (
-            <div style={{ marginTop: "10px", fontSize: "medium" }}>
-              Follow up Questions:
-            </div>
-          )}
-          <FollowUpQuestions>
-            {followup &&
-              followup.map((question, index) => (
-                <Question
-                  key={index}
-                  onClick={() => askQuestion(question)}
-                  style={{
-                    color: theme?.colors.text_secondary,
-                    backgroundColor: theme?.colors.bg_third,
-                  }}
-                >
-                  {index + 1}. {question}
-                </Question>
-              ))}
-          </FollowUpQuestions>
-        </ChatGPTResult>
-      </TextBoxAnswer>
+      {chatGptResult.map((result, index) => (
+        <>
+          {result.role === "user" ?
+            <TextBoxQuestion style={{ backgroundColor: theme?.colors.bg_qtextbox, color: theme?.colors.text_secondary }}>
+              <Pre>{result.content}</Pre>
+            </TextBoxQuestion>
+            :
+            <TextBoxAnswer
+              style={{
+                backgroundColor: theme?.colors.bg_atextbox,
+              }}
+            >
+              <ChatGPTResult style={{ color: theme?.colors.text_secondary }}>
+                <Pre>{result.content}</Pre>
+                {result.followup && result.followup.length > 0 && (
+                  <div style={{ marginTop: "10px", fontWeight: "bold" }}>
+                    Follow-up questions:
+                  </div>
+                )}
+                <FollowUpQuestions>
+                  {result.followup &&
+                    result.followup.map((question, index) => (
+                      <Question
+                        key={index}
+                        onClick={() => sendQuestion(question)}
+                        style={{
+                          color: theme?.colors.text_secondary,
+                          backgroundColor: theme?.colors.bg_qtextbox,
+                        }}
+                      >
+                        {index + 1}. {question}
+                      </Question>
+                    ))}
+                </FollowUpQuestions>
+              </ChatGPTResult>
+            </TextBoxAnswer>
+          }
+        </>
+      ))}
+
 
       <InputTextBox>
-        <textarea name="" id="" placeholder="Ask any question about a spec."></textarea>
+        <textarea name="question" id="question" placeholder="Ask any question about a spec."></textarea>
         <SendIconBox>
           <SendIcon
             style={{ position: "relative", left: "10px", color: "#0000ff" }}
+            onClick={() => sendQuestion("")}
           />
         </SendIconBox>
       </InputTextBox>
@@ -225,7 +301,8 @@ export default function ChatGPT({ search, style, info }: ChatGPTPros) {
 }
 
 const TextBoxQuestion = styled.div`
-  position: relative;
+  position: relative;  
+  box-shadow: 0 2px 4px #00000024, 0 0 2px #0000001f;
   margin-top: 10px;
   margin-bottom: 10px;
   margin-left: auto;
@@ -249,7 +326,7 @@ const InputTextBox = styled.div`
   position: sticky;
   bottom: 10px;
   width: 100%;
-  background-color: #e7e3e3;
+  background-color: #fff;
   textarea {
     resize: none;
     border: none;
@@ -257,6 +334,7 @@ const InputTextBox = styled.div`
     width: 100%;
     height: 50px;
     font-size: 18px;
+    padding: 1px;
   }
 `;
 
@@ -275,9 +353,11 @@ const ChatGPTBox = styled.div`
 
 const TextBoxAnswer = styled.div`
   position: relative;
+  box-shadow: 0 2px 4px #00000024, 0 0 2px #0000001f;
   margin: 10px 0;
   border-radius: 5px;
   padding: 10px;
+  width: 80%;
 `;
 
 const MetaInfoChatGPT = styled.div`
