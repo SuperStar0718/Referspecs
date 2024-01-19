@@ -95,7 +95,7 @@ export default function FavoriteResult() {
                   }
                 >
                   <ListItemText
-                    secondary={result?.abs.substring(0, 80) + " ..."}
+                    secondary={result?.description.substring(0, 80) + " ..."}
                     secondaryTypographyProps={{
                       color: theme?.colors.text_secondary,
                     }}
@@ -106,7 +106,7 @@ export default function FavoriteResult() {
                     <Link
                       href={result?.url || ""}
                       style={{
-                        color: theme?.colors.primary,
+                        color: "#3eb972",
                       }}
                     >
                       {result?.title}
@@ -129,7 +129,7 @@ const FavoriteResultRoot = styled.div`
   justify-content: flex-end;
 `;
 
-const FavoriteResultList = styled(motion.div) <{
+const FavoriteResultList = styled(motion.div)<{
   bgColor?: string;
 }>`
   position: absolute;

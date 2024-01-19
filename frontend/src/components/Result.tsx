@@ -14,11 +14,10 @@ import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
 import AdsClickIcon from "@mui/icons-material/AdsClick";
 import LocalLibraryIcon from "@mui/icons-material/LocalLibrary";
 import { useMemo, useState } from "react";
-import { Result } from "@/libs/interfaces";
+import { Result, SearchData } from "@/libs/interfaces";
 import { useTheme } from "@/context/Theme";
 import useDeviceDetect from "@/hook/useDetectDevice";
 import { random } from "lodash";
-import Keyword from "./Keyword";
 
 interface ResultProps {
   result: Result;
@@ -36,124 +35,64 @@ export default function Result({ result }: ResultProps) {
   });
 
   return (
-    <ResultRoot
-      onMouseEnter={() => setMouseOver(true)}
-      onMouseLeave={() => setMouseOver(false)}
-    >
-      <ResultBox
-        bgSecondary={theme?.colors.bg_secondary}
-        style={{
-          left: isMobileView ? "0px" : "-20px",
-        }}
-        animate={{
-          backgroundColor: mouseOver
-            ? theme?.colors.bg_secondary
-            : theme?.colors.bg,
-          outline: mouseOver
-            ? "1px solid " + theme?.colors.section.primary
-            : "1px solid rgba(0, 0, 0, 0)",
-          outlineOffset: mouseOver ? "5px" : "0px",
-          transition: {
-            outlineOffset: {
-              duration: 0.2,
-              delay: 0.2,
-            },
-          },
-        }}
+    <>
+      <ResultRoot
+        onMouseEnter={() => setMouseOver(true)}
+        onMouseLeave={() => setMouseOver(false)}
       >
-        <KeyWordsBox>
-          {result?.keywords.map((keyword, index) => (
-            <Keyword key={index} index={index} keyword={keyword} />
-          ))}
-        </KeyWordsBox>
-        <Link href={result.url} target="_blank">
-          <ResultTitle
-            variant="h6"
-            sx={{
-              color: theme?.colors.text,
-              "&:hover": {
-                color: theme?.colors.section.secondary,
+        <ResultBox
+          bgSecondary={theme?.colors.bg_secondary}
+          style={{
+            left: isMobileView ? "0px" : "-20px",
+          }}
+          animate={{
+            backgroundColor: mouseOver
+              ? theme?.colors.bg_secondary
+              : theme?.colors.bg,
+            outline: mouseOver
+              ? "1px solid " + theme?.colors.section.primary
+              : "1px solid rgba(0, 0, 0, 0)",
+            outlineOffset: mouseOver ? "5px" : "0px",
+            transition: {
+              outlineOffset: {
+                duration: 0.2,
+                delay: 0.2,
               },
-            }}
-          >
-            {result.title}
-          </ResultTitle>
-        </Link>
+            },
+          }}
+        >
+          <Link href={result.url} target="_blank">
+            <ResultTitle
+              variant="h6"
+              sx={{
+                color: theme?.colors.text,
+                "&:hover": {
+                  color: theme?.colors.section.secondary,
+                },
+              }}
+            >
+              {result.title}
+            </ResultTitle>
+          </Link>
 
-        <ResultContent
-          variant="body2"
-          sx={{
-            color: theme?.colors.text_secondary,
-          }}
-          dangerouslySetInnerHTML={{
-            __html: result.highlight_abs,
-          }}
-          themeContext={theme}
-        ></ResultContent>
-        {useMemo(
-          () =>
-            !isMobileView ? (
-              <Metadata>
-                <Chip
-                  size="small"
-                  variant="outlined"
-                  icon={<PublishedWithChangesIcon />}
-                  label={`Published in ${formatter.format(
-                    new Date(result.createdAt)
-                  )}`}
-                  sx={{
-                    color: theme?.colors.text,
-                    borderColor: theme?.colors.section.primary,
-                    padding: "4px",
-                    height: 28,
-                  }}
-                />
-                <Chip
-                  size="small"
-                  icon={<AdsClickIcon />}
-                  label={`More than ${random(100, 1000)} clicks`}
-                  variant="outlined"
-                  sx={{
-                    color: theme?.colors.text,
-                    borderColor: theme?.colors.section.primary,
-                    padding: "4px",
-                    height: 28,
-                  }}
-                />
-                {result.reading_time && (
-                  <Chip
-                    size="small"
-                    icon={<LocalLibraryIcon />}
-                    label={`Reading time of ${result.reading_time} min`}
-                    variant="outlined"
-                    sx={{
-                      color: theme?.colors.text,
-                      borderColor: theme?.colors.section.primary,
-                      padding: "4px",
-                      height: 28,
-                    }}
-                  />
-                )}
-              </Metadata>
-            ) : (
-              <Typography
-                variant="caption"
-                sx={{
-                  color: theme?.colors.text,
-                }}
-              >
-                Published in {formatter.format(new Date(result.createdAt))}
-              </Typography>
-            ),
-          [theme, isMobileView]
+          <ResultContent
+            variant="body2"
+            sx={{
+              color: theme?.colors.text_secondary,
+            }}
+            dangerouslySetInnerHTML={{
+              __html: result.description,
+            }}
+            themeContext={theme}
+          ></ResultContent>
+        </ResultBox>
+        {!isMobileView && (
+          <ResultOptionsBox>
+            <ResultOptions show={mouseOver} result={result}></ResultOptions>
+          </ResultOptionsBox>
         )}
-      </ResultBox>
-      {!isMobileView && (
-        <ResultOptionsBox>
-          <ResultOptions show={mouseOver} result={result}></ResultOptions>
-        </ResultOptionsBox>
-      )}
-    </ResultRoot>
+      </ResultRoot>
+    </>
   );
 }
 
@@ -201,38 +140,6 @@ const ResultBox = styled(motion.div)<{
   gap: 10px;
 
   border: 1px solid rgba(0, 0, 0, 0);
-`;
-
-const KeyWordsBox = styled(motion.div)`
-  position: relative;
-  width: 100%;
-  height: auto;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-`;
-
-const KeyWord = styled(motion(Typography))<{
-  hoverbg?: string;
-  hovercolor?: string;
-}>`
-  position: relative;
-  width: auto;
-  height: 24px;
-  padding: 5px 10px;
-  border-radius: 12px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 5px;
-
-  cursor: zoom-in;
-  &:hover {
-    background-color: ${(props) => props.hoverbg};
-    color: ${(props) => props.hovercolor};
-  }
 `;
 
 const Metadata = styled(motion.div)`

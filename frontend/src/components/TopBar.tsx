@@ -4,6 +4,7 @@ import { Typography } from "@mui/material";
 import styled from "styled-components";
 import GeneralTitle from "./GeneralTitle";
 import { useMemo } from "react";
+import FavoriteResult from "./FavoriteList";
 
 export default function TopBar() {
   const { theme } = useTheme();
@@ -12,7 +13,18 @@ export default function TopBar() {
     () => (
       <TopBarRoot bg={theme?.colors.bg}>
         <GeneralTitle variant="h4" />
-        <ToogleTheme />
+
+        <div
+          style={{
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            gap: "20px",
+          }}
+        >
+          <FavoriteResult />
+          <ToogleTheme />
+        </div>
       </TopBarRoot>
     ),
     [theme]

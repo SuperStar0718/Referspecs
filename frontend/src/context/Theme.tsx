@@ -64,7 +64,7 @@ const themes = {
       bg_secondary: "#242424",
       bg_qtextbox: "#3c3e69",
       bg_third: "#313131",
-      bg_atextbox: "#ffffff",
+      bg_atextbox: "#2f3031",
       text: "#ffffff",
       text_secondary: "#cacaca",
       primary: "#0000ff",

@@ -8,7 +8,7 @@ import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import ShareIcon from "@mui/icons-material/Share";
 import { useTheme } from "@/context/Theme";
-import { Result } from "@/libs/interfaces";
+import { Result, SearchData } from "@/libs/interfaces";
 import { useResult } from "@/context/FavoriteResult";
 
 interface ResultOptionsProps {
@@ -53,27 +53,13 @@ export default function ResultOptions({ show, result }: ResultOptionsProps) {
   };
 
   const handleShare = (result: Result) => {
-    navigator.clipboard.writeText(result.url);
-    alert("Link copied to clipboard!");
+    navigator.clipboard.writeText(result.url || "");
   };
 
   return (
     <AnimatePresence>
       {show && (
         <ResultOptionsRoot layout>
-          <ResultOptionsButton {...resultOptionsButtonProps} custom={1}>
-            <Rating
-              name="half-rating"
-              defaultValue={result?.rating || 2.5}
-              precision={0.5}
-              onChange={(event, newValue) => {
-                result.rating = newValue as number;
-              }}
-              style={{
-                alignItems: "flex-start",
-              }}
-            />
-          </ResultOptionsButton>
           <ResultOptionsButton
             {...resultOptionsButtonProps}
             bgColor={theme?.colors.bg_secondary}

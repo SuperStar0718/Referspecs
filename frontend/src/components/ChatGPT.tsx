@@ -1,17 +1,10 @@
 import { useTheme } from "@/context/Theme";
 import openai from "@/service/openai";
-import { Avatar, Chip, List, Tooltip, Typography } from "@mui/material";
-import { color } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled, { CSSProperties } from "styled-components";
-import ModelTrainingIcon from "@mui/icons-material/ModelTraining";
-import Result from "./Result";
-import { Result as IResult } from "@/libs/interfaces";
 import Banner, { Message } from "./Banner";
-import router from "next/router";
 import SendIcon from "@mui/icons-material/Send";
-import { set } from "lodash";
-
+import Loading from "./Loading";
 interface ChatGPTPros {
   search: string;
   style: CSSProperties;
@@ -26,16 +19,23 @@ interface ChatGPTResult {
 
 export default function ChatGPT({ search, style, info }: ChatGPTPros) {
   const { theme } = useTheme();
-  const [results, setResults] = useState<IResult[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [chatGptResult, setChatGptResult] = useState<ChatGPTResult[]>([
     { role: "user", content: search, followup: null },
   ]);
+  const messageShow = useRef<HTMLDivElement>(null);
 
-  const askQuestion = (question: string) => {
-    router.push({
-      pathname: "/results",
-      query: { search: question },
-    });
+  const scrollToBottom = () => {
+    if (messageShow.current) {
+      try {
+        setTimeout(() => {
+          if (messageShow.current)
+            messageShow.current.scrollTop = messageShow.current?.scrollHeight;
+        }, 100);
+      } catch (error) {
+        console.warn(error);
+      }
+    }
   };
 
   const sendQuestion = async (question: string) => {
@@ -53,64 +53,63 @@ export default function ChatGPT({ search, style, info }: ChatGPTPros) {
         },
       ];
     });
+    scrollToBottom();
     (document.getElementById("question") as HTMLInputElement).value = "";
-    const chatCompletion = await openai.chat.completions.create({
-      messages: [
-        { role: "user", content: `Tell me what you know about: ${search}` },
-      ],
-      model: "gpt-3.5-turbo",
-    });
+    setIsLoading(true);
+    try {
+      const chatCompletion = await openai.chat.completions.create({
+        messages: [
+          { role: "user", content: `Tell me what you know about: ${search}` },
+        ],
+        model: "gpt-3.5-turbo",
+      });
 
-    const followupQuestion = await openai.chat.completions.create({
-      messages: [
-        {
-          role: "user",
-          content: `Generate 2 or 3 follow up questions within very simple and short sentence about ${search}.`,
-        },
-      ],
-      model: "gpt-3.5-turbo",
-    });
+      const followupQuestion = await openai.chat.completions.create({
+        messages: [
+          {
+            role: "user",
+            content: `Generate 2 or 3 follow up questions within very simple and short sentence about ${search}.`,
+          },
+        ],
+        model: "gpt-3.5-turbo",
+      });
+      setIsLoading(false);
 
-    setChatGptResult((old) => {
-      return [
-        ...old,
-        {
-          role: "gpt",
-          content: chatCompletion.choices[0].message.content,
-          followup: followupQuestion.choices[0].message.content
-            .split("\n")
-            .map((question: string) =>
-              question.replace(/^\d+\.\s*/, "").trim()
-            ),
-        },
-      ];
-    });
-  };
-
-  const adapterChatGptResultToResult = (
-    resultsChatGpt: Array<{
-      title: string;
-      abs: string;
-      keywords: string[];
-      url: string;
-    }>
-  ): IResult[] => {
-    return resultsChatGpt.map((result) => {
-      return {
-        title: result.title,
-        abs: result.abs,
-        keywords: result.keywords.map((keyword) => ({ text: keyword })),
-        url: result.url,
-        highlight_abs: result.abs,
-        createdAt: new Date().toDateString(),
-        updatedAt: new Date().toDateString(),
-      };
-    });
+      setChatGptResult((old) => {
+        return [
+          ...old,
+          {
+            role: "gpt",
+            content: chatCompletion.choices[0].message.content,
+            followup: followupQuestion.choices[0].message.content
+              .split("\n")
+              .map((question: string) =>
+                question.replace(/^\d+\.\s*/, "").trim()
+              ),
+          },
+        ];
+      });
+      scrollToBottom();
+    } catch (error) {
+      setChatGptResult((old) => {
+        return [
+          ...old,
+          {
+            role: "gpt",
+            content: "Unable to complete the search.",
+            followup: null,
+          },
+        ];
+      });
+      setIsLoading(false);
+      scrollToBottom();
+    }
   };
 
   useEffect(() => {
     const fetchCompletion = async () => {
       try {
+        setIsLoading(true);
         const chatCompletion = await openai.chat.completions.create({
           messages: [
             { role: "user", content: `Tell me what you know about: ${search}` },
@@ -127,6 +126,7 @@ export default function ChatGPT({ search, style, info }: ChatGPTPros) {
           ],
           model: "gpt-3.5-turbo",
         });
+        setIsLoading(false);
 
         setChatGptResult((old) => {
           return [
@@ -142,6 +142,7 @@ export default function ChatGPT({ search, style, info }: ChatGPTPros) {
             },
           ];
         });
+        scrollToBottom();
       } catch (error) {
         setChatGptResult((old) => {
           return [
@@ -153,29 +154,8 @@ export default function ChatGPT({ search, style, info }: ChatGPTPros) {
             },
           ];
         });
-        error;
-      }
-    };
-
-    const fetchResults = async () => {
-      const chatCompletion = await openai.chat.completions.create({
-        messages: [
-          {
-            role: "user",
-            content: `Bring two useful links about ${search} in an array in json format, each array object must contain the following properties: title, abs (abstract), keywords (string array) and url. Use a maximum of 300 tokens.`,
-          },
-        ],
-        model: "gpt-3.5-turbo",
-      });
-      // JSON.parse(chatCompletion.choices[0].message.content);
-      try {
-        console.log("result:", chatCompletion.choices[0].message.content);
-        setResults(
-          adapterChatGptResultToResult(
-            chatCompletion.choices[0].message.content
-          )
-        );
-      } catch (error) {
+        scrollToBottom();
+        setIsLoading(false);
         error;
       }
     };
@@ -183,7 +163,6 @@ export default function ChatGPT({ search, style, info }: ChatGPTPros) {
     if (search) {
       try {
         fetchCompletion();
-        fetchResults();
       } catch (error) {
         error;
       }
@@ -191,15 +170,15 @@ export default function ChatGPT({ search, style, info }: ChatGPTPros) {
   }, [search]);
 
   return (
-    <div>
+    <div style={{ width: "100%", ...style }}>
       <ChatGPTBox
         style={{
           height: "calc(100vh - 250px)",
           backgroundColor: theme?.colors.bg_secondary,
           paddingLeft: "20px",
           paddingRight: "20px",
-          ...style,
         }}
+        ref={messageShow}
       >
         {info && <Banner message={info} />}
         {chatGptResult.map((result, index) => (
@@ -228,30 +207,44 @@ export default function ChatGPT({ search, style, info }: ChatGPTPros) {
                   )}
                   <FollowUpQuestions>
                     {result.followup &&
-                      result.followup.map((question, index) => (
-                        <Question
-                          key={index}
-                          onClick={() => sendQuestion(question)}
-                          style={{
-                            color: theme?.colors.text_secondary,
-                            backgroundColor: theme?.colors.bg_qtextbox,
-                          }}
-                        >
-                          {index + 1}. {question}
-                        </Question>
-                      ))}
+                      result.followup.map(
+                        (question, index) =>
+                          // if question is empty, then continue
+                          question && (
+                            <Question
+                              key={index}
+                              onClick={() => sendQuestion(question)}
+                              style={{
+                                color: theme?.colors.text_secondary,
+                                backgroundColor: theme?.colors.bg_qtextbox,
+                              }}
+                            >
+                              {index + 1}. {question}
+                            </Question>
+                          )
+                      )}
                   </FollowUpQuestions>
                 </ChatGPTResult>
               </TextBoxAnswer>
             )}
           </>
         ))}
+
+        {isLoading && <Loading />}
       </ChatGPTBox>
-      <InputTextBox>
+      <InputTextBox
+        style={{
+          background: `linear-gradient(180deg, ${theme?.colors.bg_secondary}, transparent)`,
+        }}
+      >
         <textarea
           name="question"
           id="question"
           placeholder="Ask any question about a spec."
+          style={{
+            backgroundColor: theme?.colors.bg_atextbox,
+            color: theme?.colors.text_secondary,
+          }}
         ></textarea>
         <SendIconBox>
           <SendIcon
@@ -288,7 +281,6 @@ const InputTextBox = styled.div`
   box-shadow: 0 2px 4px #00000024, 0 0 2px #0000001f;
   border-radius: 5px;
   width: 100%;
-  background: linear-gradient(180deg, #f5f5f5, transparent);
   textarea {
     resize: none;
     border: none;
@@ -305,6 +297,7 @@ const ChatGPTBox = styled.div`
   width: 100%;
   box-shadow: 0 2px 4px #00000024, 0 0 2px #0000001f;
   overflow-y: scroll;
+  scroll: smooth;
   &::-webkit-scrollbar {
     width: 6px;
   }
@@ -346,6 +339,7 @@ const Question = styled.div`
   font-weight: 600;
   line-height: 24px;
   font-style: italic;
+  text-decoration: underline;
   cursor: pointer;
   width: fit-content;
   padding: 5px 10px;

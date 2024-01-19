@@ -60,8 +60,8 @@ export default function SearchPage({ countDocs }: SearchPageProps) {
             <div>
               <H1>Conversational AI</H1>
               <Text style={{ color: theme?.colors.text_secondary }}>
-                Ask question like: "What are the basic requirements of
-                MIL-STD-461?"
+                Ask question like: &quot;What are the basic requirements of
+                MIL-STD-461?&quot;
               </Text>
             </div>
           </div>
@@ -70,20 +70,19 @@ export default function SearchPage({ countDocs }: SearchPageProps) {
               onClick={askQuestion}
               className="p-5 bg-[#dbdbdb] cursor-pointer rounded-xl hover:shadow-md hover:outline-2 hover:outline hover:outline-[#7376e1]"
             >
-              What are the basic requirements of MIL-STD-461?
+              What is the federal spec for cable and wire insulation?
             </Question>
             <Question
               onClick={askQuestion}
               className="p-5 bg-[#dbdbdb] cursor-pointer rounded-xl hover:shadow-md hover:outline-2 hover:outline hover:outline-[#7376e1]"
             >
-              What is the process for conducting a risk assessment in the SQF
-              Food Safety Code?
+              How does Mil-Spec 810G impact rugged device testing in defense?
             </Question>
             <Question
               onClick={askQuestion}
               className="p-5 bg-[#dbdbdb] cursor-pointer rounded-xl hover:shadow-md hover:outline-2 hover:outline hover:outline-[#7376e1]"
             >
-              What are the principal SQF requirements for food safety?
+              What are the key considerations in MIL-STD-461
             </Question>
           </QuestionPanel>
         </ChatGPT>

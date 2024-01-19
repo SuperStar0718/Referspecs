@@ -113,36 +113,6 @@ export default function ResutlsPage() {
             lineColor: theme?.colors.section.primary,
           }}
         ></SelectOption>
-        {!isMobileView && (
-          <ToggleButton
-            sx={{
-              height: "40px",
-            }}
-            value={activeFilter}
-            selected={activeFilter}
-            onChange={() => {
-              setActiveFilter(!activeFilter);
-            }}
-          >
-            <Typography
-              variant="body2"
-              sx={{
-                color: !activeFilter
-                  ? theme?.colors.primary
-                  : theme?.colors.text_secondary,
-              }}
-            >
-              Filtros
-            </Typography>
-            <FilterListIcon
-              sx={{
-                color: !activeFilter
-                  ? theme?.colors.primary
-                  : theme?.colors.text_secondary,
-              }}
-            />
-          </ToggleButton>
-        )}
       </SelectAndFilterBox>
       <FilterBox
         show={!activeFilter}
@@ -196,7 +166,7 @@ const SelectAndFilterBox = styled.div`
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 `;
 
-const ResultsBox = styled(motion.div) <{
+const ResultsBox = styled(motion.div)<{
   isMobileView?: boolean;
 }>`
   position: relative;
