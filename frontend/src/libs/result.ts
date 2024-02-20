@@ -4,7 +4,7 @@ import { FilterFields, Page, Result } from "./interfaces";
 import api from "../service/api";
 
 export function generateRandomPage(nResults: number): Page<Result> {
-  const results: Result[] = [];
+  const results: any[] = [];
   for (let i = 0; i < nResults; i++) {
     results.push({
       title: randomWords({ min: 3, max: 7, join: " " }),
@@ -61,7 +61,7 @@ export async function searchOnSearchOnMath(
   query: string,
   page: number,
   filterValues?: any
-): Promise<Page<Result>> {
+): Promise<Page<any>> {
   try {
     const { data: pageData } = await api.get<{
       totalResults: number;

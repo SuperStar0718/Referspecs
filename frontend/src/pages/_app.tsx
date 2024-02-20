@@ -6,6 +6,7 @@ import { SearchProvider } from "@/context/Search";
 import { ResultProvider } from "@/context/FavoriteResult";
 import Head from "next/head";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import "../styles/Global.css";
 
 const queryClient = new QueryClient();
 

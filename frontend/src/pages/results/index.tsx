@@ -113,36 +113,6 @@ export default function ResutlsPage() {
             lineColor: theme?.colors.section.primary,
           }}
         ></SelectOption>
-        {!isMobileView && (
-          <ToggleButton
-            sx={{
-              height: "40px",
-            }}
-            value={activeFilter}
-            selected={activeFilter}
-            onChange={() => {
-              setActiveFilter(!activeFilter);
-            }}
-          >
-            <Typography
-              variant="body2"
-              sx={{
-                color: !activeFilter
-                  ? theme?.colors.primary
-                  : theme?.colors.text_secondary,
-              }}
-            >
-              Filtros
-            </Typography>
-            <FilterListIcon
-              sx={{
-                color: !activeFilter
-                  ? theme?.colors.primary
-                  : theme?.colors.text_secondary,
-              }}
-            />
-          </ToggleButton>
-        )}
       </SelectAndFilterBox>
       <FilterBox
         show={!activeFilter}
@@ -153,7 +123,7 @@ export default function ResutlsPage() {
         <ResultsBox
           style={{
             padding: isMobileView ? "0 5px" : "0 10rem",
-            width: isMobileView ? "100%" : "70%",
+            width: isMobileView ? "100%" : "100%",
           }}
         >
           <SectionController

@@ -55,16 +55,16 @@ export default function SearchBar({
       animate={
         mic
           ? {
-              boxShadow: ["0 0 60px 0 #DA3D3D", "0 0 70px 0px #0000ff"],
-              transition: {
-                duration: 0.5,
-                repeat: Infinity,
-                repeatType: "reverse",
-              },
-            }
+            boxShadow: ["0 0 60px 0 #DA3D3D", "0 0 70px 0px #0000ff"],
+            transition: {
+              duration: 0.5,
+              repeat: Infinity,
+              repeatType: "reverse",
+            },
+          }
           : {
-              boxShadow: "0 0 10px 0 rgba(0, 0, 0, 0.2)",
-            }
+            boxShadow: "0 0 10px 0 rgba(0, 0, 0, 0.2)",
+          }
       }
       style={{
         backgroundColor: theme?.colors.bg_secondary,
@@ -121,7 +121,7 @@ export default function SearchBar({
   );
 }
 
-const SearchInputBar = styled(motion.div)<{
+const SearchInputBar = styled(motion.div) <{
   isresultpage?: boolean;
 }>`
   position: relative;

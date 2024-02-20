@@ -40,7 +40,7 @@ export default function SearchBox({ searched, isResultPage }: SearchBoxProps) {
       }}
       style={{
         backgroundColor: theme?.colors.bg,
-        zIndex: (focus || hover) ? 1 : 0,
+        zIndex: focus || hover ? 1 : 0,
       }}
       animate={{
         border:

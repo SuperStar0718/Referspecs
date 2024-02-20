@@ -6,16 +6,33 @@ export interface Keyword {
   dbpedia_resource?: string;
 }
 
+export interface WebKeyword {
+  position: number;
+  knowledge: null;
+  keyword_html: string;
+  keyword: string;
+}
+
+export interface WebRelatedKeywords {
+  spelling_suggestion_html: null;
+  spelling_suggestion: null;
+  keywords: WebKeyword[];
+}
+
 export interface Result {
-  title: string;
-  abs: string;
-  keywords: Keyword[];
+  position: number;
   url: string;
-  highlight_abs: string;
-  createdAt: string;
-  updatedAt: string;
+  title: string;
+  description: string;
   rating?: number;
   reading_time?: number;
+}
+
+export interface SearchData {
+  search_term: string;
+  knowledge_panel: null;
+  results: Result[];
+  related_keywords: WebRelatedKeywords;
 }
 
 export interface ListComponent {

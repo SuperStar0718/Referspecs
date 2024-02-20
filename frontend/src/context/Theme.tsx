@@ -16,6 +16,8 @@ interface ThemeMain {
     bg_third: string;
     bg: string;
     bg_secondary: string;
+    bg_qtextbox: string;
+    bg_atextbox: string;
     text: string;
     text_secondary: string;
     primary: string;
@@ -43,10 +45,12 @@ const sectionThemes = {
 const themes = {
   light: {
     colors: {
-      bg: "#fff",
+      bg: "#ffffff",
       bg_secondary: "#f5f5f5",
+      bg_qtextbox: "#d6d9f5",
       bg_third: "#d9d9d9",
-      text: "#000",
+      bg_atextbox: "#ffffff",
+      text: "#000000",
       text_secondary: "#242424",
       primary: "#0000ff",
       secondary: "#DA3D3D",
@@ -58,8 +62,10 @@ const themes = {
     colors: {
       bg: "#202020",
       bg_secondary: "#242424",
+      bg_qtextbox: "#3c3e69",
       bg_third: "#313131",
-      text: "#fff",
+      bg_atextbox: "#2f3031",
+      text: "#ffffff",
       text_secondary: "#cacaca",
       primary: "#0000ff",
       secondary: "#DA3D3D",

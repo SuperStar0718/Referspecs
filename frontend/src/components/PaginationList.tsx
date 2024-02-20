@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Result, Page } from "../libs/interfaces";
+import {
+  Result,
+  Page,
+  WebRelatedKeywords,
+  SearchData,
+} from "../libs/interfaces";
 import { Pagination, CircularProgress, List, Typography } from "@mui/material";
 // import { getImoveisByFilterWithPage } from "../../../lib/imovel";
 import { ListComponent } from "../libs/interfaces";
@@ -10,6 +15,9 @@ import { useTheme } from "@/context/Theme";
 import ResultListSkeleton from "./ResultListSkeleton";
 import Banner from "./Banner";
 import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { motion } from "framer-motion";
+import Keyword from "./Keyword";
 
 export default function PageButtonList({
   search,
@@ -22,11 +30,44 @@ export default function PageButtonList({
 }: ListComponent) {
   const { theme } = useTheme();
   const [pageNumber, setPageNumber] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchData, setSearchData] = useState<SearchData | null>(null);
 
-  const { data: page, isLoading } = useQuery(
+  const { data: page } = useQuery(
     ["search", search, pageNumber, filterValues],
     () => getMorePages(search, pageNumber, filterValues)
   );
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const options = {
+        method: "GET",
+        url: "https://google-search74.p.rapidapi.com/",
+        params: {
+          query: search,
+          limit: "30",
+          related_keywords: "true",
+        },
+        headers: {
+          "X-RapidAPI-Key":
+            "8d389582c2msh17c72135c674518p1e2321jsna525289b55d0",
+          "X-RapidAPI-Host": "google-search74.p.rapidapi.com",
+        },
+      };
+
+      try {
+        setIsLoading(true);
+        const response = await axios.request(options);
+        console.log(response.data, "response.data");
+        setSearchData(response.data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, [search]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -35,8 +76,8 @@ export default function PageButtonList({
 
   return (
     <ListContainer isMobile={isMobileView} style={style} id={id}>
-      {info && <Banner message={info} />}
-      {!isLoading && (page?.data.length || 0) > 0 && (
+      {/* {info && <Banner message={info} />} */}
+      {/* {!isLoading && (page?.data.length || 0) > 0 && (
         <MetadataSearchContainer
           variant="caption"
           color={theme?.colors.text_secondary}
@@ -46,7 +87,7 @@ export default function PageButtonList({
         >
           {page?.total} resultados em aproximadamente {page?.took} segundos
         </MetadataSearchContainer>
-      )}
+      )} */}
 
       {isLoading ? (
         <ResultListSkeleton />
@@ -56,17 +97,30 @@ export default function PageButtonList({
             padding: "10px 0",
           }}
         >
-          {page?.data.map((imovel) => (
-            <CardComponent key={imovel.url} result={imovel} />
-          ))}
-          {page?.data.length === 0 && !isLoading && (
+          {searchData && (
+            <>
+              <KeyWordsBox>
+                {searchData?.related_keywords.keywords.map((keyword, index) => (
+                  <Keyword
+                    key={index}
+                    index={index}
+                    keyword={{ text: keyword.keyword, dbpedia_resource: "" }}
+                  />
+                ))}
+              </KeyWordsBox>
+              {searchData?.results.map((result, index) => (
+                <CardComponent key={index} result={result} />
+              ))}
+            </>
+          )}
+          {/* {page?.data.length === 0 && !isLoading && (
             <NoResultContainer variant="body1" color={theme?.colors.text}>
               Nenhum resultado encontrado {":("}
             </NoResultContainer>
-          )}
+          )} */}
         </List>
       )}
-      {!!page?.data.length && (
+      {/* {!!page?.data.length && (
         <PageCentralContainer>
           <Pagination
             sx={{
@@ -90,7 +144,7 @@ export default function PageButtonList({
             page={pageNumber}
           />
         </PageCentralContainer>
-      )}
+      )} */}
     </ListContainer>
   );
 }
@@ -110,6 +164,38 @@ export const ListContainer = styled.div<{ isMobile: boolean }>`
     `
     padding-bottom: 55px;
   `}
+`;
+
+const KeyWordsBox = styled(motion.div)`
+  position: relative;
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+`;
+
+const KeyWord = styled(motion(Typography))<{
+  hoverbg?: string;
+  hovercolor?: string;
+}>`
+  position: relative;
+  width: auto;
+  height: 24px;
+  padding: 5px 10px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+
+  cursor: zoom-in;
+  &:hover {
+    background-color: ${(props) => props.hoverbg};
+    color: ${(props) => props.hovercolor};
+  }
 `;
 
 export const LoadingCentralContainer = styled.div`
